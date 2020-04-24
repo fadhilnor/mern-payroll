@@ -3,14 +3,15 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 let User = require('../models/Users');
 
-// Login Page
-router.get('/login', (req, res) => res.render('login'));
+// Get all user
+router.route('/').get((req, res) => {
+  User.find()
+    .then((users) => res.json(users))
+    .catch((err) => res.status(400).json('Error: ' + err));
+});
 
-// Register Page
-router.get('/register', (req, res) => res.render('register'));
-
-// Register
-router.post('/register', (req, res) => {
+// Register new user
+router.route('/register').post((req, res) => {
   const { name, email, password, passwordConfirm } = req.body;
   let errors = [];
 
@@ -30,24 +31,16 @@ router.post('/register', (req, res) => {
 
   // Save if passed validation
   if (errors.length > 0) {
-    res.render('register', {
-      errors,
-      name,
-      email,
-      password,
-      passwordConfirm,
+    errors.forEach((error) => {
+      console.log('Errors found: ' + error.msg);
+      return;
     });
   } else {
     User.findOne({ email: email }).then((user) => {
       if (user) {
         errors.push({ msg: 'Email already exists' });
-        res.render('register', {
-          errors,
-          name,
-          email,
-          password,
-          password2,
-        });
+        console.log('Errors :' + errors[0].msg);
+        return;
       } else {
         const newUser = new User({
           name,
@@ -65,10 +58,11 @@ router.post('/register', (req, res) => {
             newUser
               .save()
               .then((user) => {
+                res.json('User added!');
                 req.flash('success_msg', 'You are now registered and can log in');
-                res.redirect('/users/login');
+                //res.redirect('/users/login');
               })
-              .catch((err) => console.log(err));
+              .catch((err) => res.status(400).json('Error: ' + err));
           });
         });
       }
