@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Login from './components/login.component';
 import Register from './components/register.component';
@@ -23,7 +23,7 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const styles = (theme) => ({
   root: {
     height: '100vh',
   },
@@ -51,27 +51,30 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-}));
+});
 
-export default function SignInSide() {
-  const classes = useStyles();
-  return (
-    <Router>
-      <Grid container component="main" className={classes.root}>
-        <CssBaseline />
-        <Grid item xs={false} sm={4} md={7} className={classes.image} />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <div className={classes.paper}>
-            <Switch>
-              <Route exact path="/" component={Login} />
-              <Route path="/register" component={Register} />
-            </Switch>
-            <Box mt={5}>
-              <Copyright />
-            </Box>
-          </div>
+class App extends Component {
+  render() {
+    return (
+      <Router>
+        <Grid container component="main" className={this.props.classes.root}>
+          <CssBaseline />
+          <Grid item xs={false} sm={4} md={7} className={this.props.classes.image} />
+          <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+            <div className={this.props.classes.paper}>
+              <Switch>
+                <Route exact path="/" component={Login} />
+                <Route path="/register" component={Register} />
+              </Switch>
+              <Box mt={5}>
+                <Copyright />
+              </Box>
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
-    </Router>
-  );
+      </Router>
+    );
+  }
 }
+
+export default withStyles(styles)(App);
