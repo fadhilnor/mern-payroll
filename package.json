@@ -9,6 +9,7 @@
     "@babel/preset-env": "^7.9.5",
     "@babel/preset-react": "^7.9.4",
     "babel-loader": "^8.1.0",
+    "concurrently": "^5.2.0",
     "css-loader": "^3.5.2",
     "html-webpack-plugin": "^4.2.0",
     "style-loader": "^1.1.4",
@@ -35,7 +36,9 @@
     ]
   },
   "scripts": {
-    "start": "webpack-dev-server --open",
+    "client": "webpack-dev-server --open",
+    "server": "cd backend && npm start",
+    "start": "concurrently - kill-others \"npm run server\" \"npm run client\"",
     "build": "node_modules/.bin/webpack --config webpack.prod.js --mode production"
   },
   "browserslist": {
