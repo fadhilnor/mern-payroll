@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Link as RouterLink } from 'react-router-dom';
+import axios from 'axios';
 
 const styles = (theme) => ({
   paper: {
@@ -32,6 +33,65 @@ const styles = (theme) => ({
 });
 
 class Register extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      email: '',
+      password: '',
+      passwordConfirm: '',
+    };
+    this.onChangeName = this.onChangeName.bind(this);
+    this.onChangeEmail = this.onChangeEmail.bind(this);
+    this.onChangePassword = this.onChangePassword.bind(this);
+    this.onChangePasswordConfirm = this.onChangePasswordConfirm.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  onChangeName(e) {
+    e.persist();
+    this.setState({
+      name: e.target.value,
+    });
+  }
+
+  onChangeEmail(e) {
+    e.persist();
+    this.setState({
+      email: e.target.value,
+    });
+  }
+
+  onChangePassword(e) {
+    e.persist();
+    this.setState({
+      password: e.target.value,
+    });
+  }
+
+  onChangePasswordConfirm(e) {
+    e.persist();
+    this.setState({
+      passwordConfirm: e.target.value,
+    });
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+
+    const newUser = this.state;
+    let self = this;
+    axios.post('http://localhost:5000/users/register', newUser).then((res) => {
+      console.log(res.data);
+      self.setState({
+        name: '',
+        email: '',
+        password: '',
+        passwordConfirm: '',
+      });
+    });
+  }
+
   render() {
     return (
       <Container component="main" className={this.props.classes.root}>
@@ -43,12 +103,14 @@ class Register extends Component {
           <Typography component="h1" variant="h5">
             Register
           </Typography>
-          <form className={this.props.classes.form} noValidate>
+          <form className={this.props.classes.form} noValidate onSubmit={this.onSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
                   autoComplete="fname"
                   name="name"
+                  value={this.state.name}
+                  onChange={this.onChangeName}
                   variant="outlined"
                   required
                   fullWidth
@@ -61,6 +123,8 @@ class Register extends Component {
                 <TextField
                   variant="outlined"
                   required
+                  value={this.state.email}
+                  onChange={this.onChangeEmail}
                   fullWidth
                   id="email"
                   label="Email Address"
@@ -72,11 +136,27 @@ class Register extends Component {
                 <TextField
                   variant="outlined"
                   required
+                  value={this.state.password}
+                  onChange={this.onChangePassword}
                   fullWidth
                   name="password"
                   label="Password"
                   type="password"
                   id="password"
+                  autoComplete="current-password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  value={this.state.passwordConfirm}
+                  onChange={this.onChangePasswordConfirm}
+                  fullWidth
+                  name="passwordConfirm"
+                  label="Confirm Password"
+                  type="password"
+                  id="passwordConfirm"
                   autoComplete="current-password"
                 />
               </Grid>
