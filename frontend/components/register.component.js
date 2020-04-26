@@ -38,6 +38,7 @@ class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      errors: [],
       name: '',
       email: '',
       password: '',
@@ -71,11 +72,13 @@ class Register extends Component {
       )
     ) {
       this.setState({
+        errors: this.state.errors.filter((e) => e !== 'email'),
         email: e.target.value,
         emailErrorText: '',
       });
     } else {
       this.setState({
+        errors: [...this.state.errors, 'email'],
         email: e.target.value,
         emailErrorText: 'Email address is not vaild',
       });
@@ -128,6 +131,12 @@ class Register extends Component {
   }
 
   render() {
+    const disabled =
+      this.state.errors.length > 0 ||
+      !this.state.name ||
+      !this.state.email ||
+      !this.state.password ||
+      !this.state.passwordConfirm;
     return (
       <Container component="main" className={this.props.classes.root}>
         <CssBaseline />
@@ -216,7 +225,14 @@ class Register extends Component {
                 />
               </Grid>
             </Grid>
-            <Button type="submit" fullWidth variant="contained" color="primary" className={this.props.classes.submit}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              disabled={disabled}
+              className={this.props.classes.submit}
+            >
               Sign Up
             </Button>
             <Grid container justify="flex-end">
