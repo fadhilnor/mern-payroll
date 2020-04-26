@@ -33,14 +33,14 @@ router.route('/register').post((req, res) => {
   if (errors.length > 0) {
     errors.forEach((error) => {
       console.log('Errors found: ' + error.msg);
-      return;
     });
+    res.status(400).json({ error: errors });
   } else {
     User.findOne({ email: email }).then((user) => {
       if (user) {
         errors.push({ msg: 'Email already exists' });
         console.log('Errors :' + errors[0].msg);
-        return;
+        res.status(400).json({ error: errors });
       } else {
         const newUser = new User({
           name,
@@ -52,7 +52,8 @@ router.route('/register').post((req, res) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
             if (err) {
               console.log('Error: ' + err);
-              throw err;
+              errors.push({ msg: 'Something went wrong. Please try again' });
+              res.status(400).json({ error: errors });
             }
             newUser.password = hash;
             newUser
@@ -62,7 +63,7 @@ router.route('/register').post((req, res) => {
                 req.flash('success_msg', 'You are now registered and can log in');
                 //res.redirect('/users/login');
               })
-              .catch((err) => res.status(400).json('Error: ' + err));
+              .catch((err) => res.status(400).json({ error: err }));
           });
         });
       }

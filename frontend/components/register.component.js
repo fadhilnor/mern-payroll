@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,6 +13,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 const styles = (theme) => ({
   paper: {
@@ -32,6 +35,11 @@ const styles = (theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  list: {
+    marginTop: theme.spacing(1),
+    backgroundColor: '#fffde7',
+    color: 'red',
+  },
 });
 
 class Register extends Component {
@@ -46,6 +54,7 @@ class Register extends Component {
       emailErrorText: '',
       showPassword: false,
       showPasswordConfirm: false,
+      serverError: [],
     };
     this.onChangeName = this.onChangeName.bind(this);
     this.onChangeEmail = this.onChangeEmail.bind(this);
@@ -111,32 +120,49 @@ class Register extends Component {
     });
   }
 
+  _renderServerErrors() {
+    return this.state.serverError.map((el) => {
+      return (
+        <ListItem key={el.msg}>
+          <ListItemText primary={el.msg} />
+        </ListItem>
+      );
+    });
+  }
+
   onSubmit(e) {
     e.preventDefault();
 
     const newUser = this.state;
     let self = this;
-    axios.post('http://localhost:5000/users/register', newUser).then((res) => {
-      console.log(res.data);
-      self.setState({
-        name: '',
-        email: '',
-        password: '',
-        passwordConfirm: '',
-        emailErrorText: '',
-        showPassword: false,
-        showPasswordConfirm: false,
+    axios
+      .post('http://localhost:5000/users/register', newUser)
+      .then((res) => {
+        console.log(res.data);
+        self.setState({
+          errors: [],
+          name: '',
+          email: '',
+          password: '',
+          passwordConfirm: '',
+          emailErrorText: '',
+          showPassword: false,
+          showPasswordConfirm: false,
+          serverError: [],
+        });
+      })
+      .catch((error) => {
+        if (error.response) {
+          this.setState({
+            serverError: [...error.response.data.error],
+          });
+        }
       });
-    });
   }
 
   render() {
-    const disabled =
-      this.state.errors.length > 0 ||
-      !this.state.name ||
-      !this.state.email ||
-      !this.state.password ||
-      !this.state.passwordConfirm;
+    const self = this.state;
+    const disabled = self.errors.length > 0 || !self.name || !self.email || !self.password || !self.passwordConfirm;
     return (
       <Container component="main" className={this.props.classes.root}>
         <CssBaseline />
@@ -153,7 +179,7 @@ class Register extends Component {
                 <TextField
                   autoComplete="fname"
                   name="name"
-                  value={this.state.name}
+                  value={self.name}
                   onChange={this.onChangeName}
                   variant="outlined"
                   required
@@ -167,10 +193,10 @@ class Register extends Component {
                 <TextField
                   variant="outlined"
                   required
-                  value={this.state.email}
+                  value={self.email}
                   onChange={this.onChangeEmail}
-                  error={!!this.state.emailErrorText}
-                  helperText={this.state.emailErrorText}
+                  error={!!self.emailErrorText}
+                  helperText={self.emailErrorText}
                   fullWidth
                   id="email"
                   label="Email Address"
@@ -182,19 +208,19 @@ class Register extends Component {
                 <TextField
                   variant="outlined"
                   required
-                  value={this.state.password}
+                  value={self.password}
                   onChange={this.onChangePassword}
                   fullWidth
                   name="password"
                   label="Password"
                   id="password"
                   autoComplete="current-password"
-                  type={this.state.showPassword ? 'text' : 'password'}
+                  type={self.showPassword ? 'text' : 'password'}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton aria-label="toggle password visibility" onClick={this.onToggleShowPassword}>
-                          {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                          {self.showPassword ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -205,19 +231,19 @@ class Register extends Component {
                 <TextField
                   variant="outlined"
                   required
-                  value={this.state.passwordConfirm}
+                  value={self.passwordConfirm}
                   onChange={this.onChangePasswordConfirm}
                   fullWidth
                   name="passwordConfirm"
                   label="Confirm Password"
                   id="passwordConfirm"
                   autoComplete="current-password"
-                  type={this.state.showPasswordConfirm ? 'text' : 'password'}
+                  type={self.showPasswordConfirm ? 'text' : 'password'}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton aria-label="toggle password visibility" onClick={this.onToggleShowPasswordConfrim}>
-                          {this.state.showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
+                          {self.showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -225,6 +251,11 @@ class Register extends Component {
                 />
               </Grid>
             </Grid>
+            {self.serverError.length > 0 && (
+              <List dense className={this.props.classes.list}>
+                {this._renderServerErrors()}
+              </List>
+            )}
             <Button
               type="submit"
               fullWidth
