@@ -18,6 +18,12 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: 'frontend/public/index.html',
+      favicon: 'frontend/public/favicon.ico',
     }),
   ],
+  devServer: {
+    historyApiFallback: true,
+    contentBase: './',
+    hot: true,
+  },
 };
