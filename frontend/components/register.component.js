@@ -40,6 +40,7 @@ class Register extends Component {
       email: '',
       password: '',
       passwordConfirm: '',
+      emailErrorText: '',
     };
     this.onChangeName = this.onChangeName.bind(this);
     this.onChangeEmail = this.onChangeEmail.bind(this);
@@ -57,9 +58,22 @@ class Register extends Component {
 
   onChangeEmail(e) {
     e.persist();
-    this.setState({
-      email: e.target.value,
-    });
+    if (
+      e.target.value.length == 0 ||
+      e.target.value.match(
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )
+    ) {
+      this.setState({
+        email: e.target.value,
+        emailErrorText: '',
+      });
+    } else {
+      this.setState({
+        email: e.target.value,
+        emailErrorText: 'Email address is not vaild',
+      });
+    }
   }
 
   onChangePassword(e) {
@@ -88,6 +102,7 @@ class Register extends Component {
         email: '',
         password: '',
         passwordConfirm: '',
+        emailErrorText,
       });
     });
   }
@@ -125,6 +140,8 @@ class Register extends Component {
                   required
                   value={this.state.email}
                   onChange={this.onChangeEmail}
+                  error={!!this.state.emailErrorText}
+                  helperText={this.state.emailErrorText}
                   fullWidth
                   id="email"
                   label="Email Address"
