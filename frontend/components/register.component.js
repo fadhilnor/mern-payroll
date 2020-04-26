@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
+import { TextField, InputAdornment, IconButton } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -11,6 +11,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 const styles = (theme) => ({
   paper: {
@@ -41,11 +43,15 @@ class Register extends Component {
       password: '',
       passwordConfirm: '',
       emailErrorText: '',
+      showPassword: false,
+      showPasswordConfirm: false,
     };
     this.onChangeName = this.onChangeName.bind(this);
     this.onChangeEmail = this.onChangeEmail.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
     this.onChangePasswordConfirm = this.onChangePasswordConfirm.bind(this);
+    this.onToggleShowPassword = this.onToggleShowPassword.bind(this);
+    this.onToggleShowPasswordConfrim = this.onToggleShowPasswordConfrim.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
@@ -90,6 +96,18 @@ class Register extends Component {
     });
   }
 
+  onToggleShowPassword() {
+    this.setState({
+      showPassword: !this.state.showPassword,
+    });
+  }
+
+  onToggleShowPasswordConfrim() {
+    this.setState({
+      showPasswordConfirm: !this.state.showPasswordConfirm,
+    });
+  }
+
   onSubmit(e) {
     e.preventDefault();
 
@@ -102,7 +120,9 @@ class Register extends Component {
         email: '',
         password: '',
         passwordConfirm: '',
-        emailErrorText,
+        emailErrorText: '',
+        showPassword: false,
+        showPasswordConfirm: false,
       });
     });
   }
@@ -158,9 +178,18 @@ class Register extends Component {
                   fullWidth
                   name="password"
                   label="Password"
-                  type="password"
                   id="password"
                   autoComplete="current-password"
+                  type={this.state.showPassword ? 'text' : 'password'}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton aria-label="toggle password visibility" onClick={this.onToggleShowPassword}>
+                          {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -172,9 +201,18 @@ class Register extends Component {
                   fullWidth
                   name="passwordConfirm"
                   label="Confirm Password"
-                  type="password"
                   id="passwordConfirm"
                   autoComplete="current-password"
+                  type={this.state.showPasswordConfirm ? 'text' : 'password'}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton aria-label="toggle password visibility" onClick={this.onToggleShowPasswordConfrim}>
+                          {this.state.showPasswordConfirm ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
             </Grid>
