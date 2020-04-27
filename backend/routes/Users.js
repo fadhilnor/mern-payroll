@@ -39,7 +39,7 @@ router.route('/register').post((req, res) => {
     User.findOne({ email: email }).then((user) => {
       if (user) {
         errors.push({ msg: 'Email already exists' });
-        console.log('Errors :' + errors[0].msg);
+        console.log('Errors: ' + errors[0].msg);
         res.status(400).json({ error: errors });
       } else {
         const newUser = new User({
@@ -72,12 +72,48 @@ router.route('/register').post((req, res) => {
 });
 
 // Login
-router.post('/login', (req, res, next) => {
-  passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/users/login',
-    failureFlash: true,
-  })(req, res, next);
+router.route('/login').post((req, res) => {
+  const { email, password } = req.body;
+  let errors = [];
+
+  // User validation
+  if (!email || !password) {
+    errors.push({ msg: 'Please enter all fields' });
+  }
+
+  // Login if passed validation
+  if (errors.length > 0) {
+    res.status(400).json({ error: errors });
+  } else {
+    // Find user
+    User.findOne({ email: email }).then((user) => {
+      if (!user) {
+        errors.push({ msg: 'Email is not registered' });
+        console.log('Errors: ' + errors[0].msg);
+        res.status(400).json({ error: errors });
+      } else {
+        const currentUser = new User({
+          email,
+          password,
+        });
+
+        // Match password
+        bcrypt.compare(currentUser.password, user.password, (err, isMatch) => {
+          if (err) {
+            errors.push({ msg: 'Something went wrong. Please try again' });
+            console.log('Errors: ' + errors[0].msg);
+            res.status(400).json({ error: errors });
+          }
+          if (isMatch) {
+            res.json('Login successful!');
+          } else {
+            errors.push({ msg: 'Incorrect email or password' });
+            res.status(400).json({ error: errors });
+          }
+        });
+      }
+    });
+  }
 });
 
 // Logout

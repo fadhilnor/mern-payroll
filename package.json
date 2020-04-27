@@ -37,7 +37,7 @@
   },
   "scripts": {
     "client": "webpack-dev-server --open --history-api-fallback",
-    "server": "cd backend && npm start",
+    "server": "cd backend && nodemon server",
     "start": "concurrently - kill-others \"npm run server\" \"npm run client\"",
     "build": "node_modules/.bin/webpack --config webpack.prod.js --mode production"
   },

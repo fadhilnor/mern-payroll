@@ -12,8 +12,12 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
 import { Link as RouterLink } from 'react-router-dom';
+import axios from 'axios';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 const styles = (theme) => ({
   paper: {
@@ -33,6 +37,16 @@ const styles = (theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  list: {
+    marginTop: theme.spacing(1),
+    backgroundColor: '#fffde7',
+    color: 'red',
+  },
+  success: {
+    marginTop: theme.spacing(1),
+    backgroundColor: '#fffde7',
+    color: 'green',
+  },
 });
 
 class LoginComponent extends Component {
@@ -44,6 +58,8 @@ class LoginComponent extends Component {
       email: '',
       password: '',
       showPassword: false,
+      serverError: [],
+      loginSuccess: '',
     };
 
     this.onChangeEmail = this.onChangeEmail.bind(this);
@@ -72,6 +88,16 @@ class LoginComponent extends Component {
     });
   }
 
+  _renderServerErrors() {
+    return this.state.serverError.map((el) => {
+      return (
+        <ListItem key={el.msg}>
+          <ListItemText primary={el.msg} />
+        </ListItem>
+      );
+    });
+  }
+
   onSubmit(e) {
     e.preventDefault();
 
@@ -79,8 +105,26 @@ class LoginComponent extends Component {
       email: this.state.email,
       password: this.state.password,
     };
-    let self = this;
-    console.log(user);
+    axios
+      .post('http://localhost:5000/users/login', user)
+      .then((res) => {
+        this.setState({
+          errors: [],
+          email: '',
+          password: '',
+          showPassword: false,
+          serverError: [],
+          loginSuccess: res.data,
+        });
+      })
+      .catch((error) => {
+        if (error.response) {
+          this.setState({
+            loginSuccess: '',
+            serverError: [...error.response.data.error],
+          });
+        }
+      });
   }
 
   render() {
@@ -132,10 +176,22 @@ class LoginComponent extends Component {
               }}
             />
             <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
+            {self.serverError.length > 0 && (
+              <List dense className={this.props.classes.list}>
+                {this._renderServerErrors()}
+              </List>
+            )}
+            {!!self.loginSuccess && (
+              <List dense className={this.props.classes.success}>
+                <ListItem>
+                  <ListItemText primary={self.loginSuccess} />
+                </ListItem>
+              </List>
+            )}
             <Button type="submit" fullWidth variant="contained" color="primary" className={this.props.classes.submit}>
               Sign In
             </Button>
-            <Grid container>
+            <Grid container justify="flex-end">
               <Grid item>
                 <Link href="#" variant="body2" component={RouterLink} to="/register">
                   {"Don't have an account? Register now"}
