@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
+import { TextField, InputAdornment, IconButton } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
@@ -12,6 +12,8 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
 import { Link as RouterLink } from 'react-router-dom';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 const styles = (theme) => ({
   paper: {
@@ -34,7 +36,55 @@ const styles = (theme) => ({
 });
 
 class LoginComponent extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      errors: [],
+      email: '',
+      password: '',
+      showPassword: false,
+    };
+
+    this.onChangeEmail = this.onChangeEmail.bind(this);
+    this.onChangePassword = this.onChangePassword.bind(this);
+    this.onToggleShowPassword = this.onToggleShowPassword.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  onChangePassword(e) {
+    e.persist();
+    this.setState({
+      password: e.target.value,
+    });
+  }
+
+  onChangeEmail(e) {
+    e.persist();
+    this.setState({
+      email: e.target.value,
+    });
+  }
+
+  onToggleShowPassword() {
+    this.setState({
+      showPassword: !this.state.showPassword,
+    });
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+
+    const user = {
+      email: this.state.email,
+      password: this.state.password,
+    };
+    let self = this;
+    console.log(user);
+  }
+
   render() {
+    const self = this.state;
     return (
       <Container component="main" className={this.props.classes.root}>
         <CssBaseline />
@@ -45,10 +95,12 @@ class LoginComponent extends Component {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={this.props.classes.form} noValidate>
+          <form className={this.props.classes.form} noValidate onSubmit={this.onSubmit}>
             <TextField
               variant="outlined"
               margin="normal"
+              value={self.email}
+              onChange={this.onChangeEmail}
               required
               fullWidth
               id="email"
@@ -60,24 +112,30 @@ class LoginComponent extends Component {
             <TextField
               variant="outlined"
               margin="normal"
+              value={self.password}
+              onChange={this.onChangePassword}
               required
               fullWidth
               name="password"
               label="Password"
-              type="password"
               id="password"
               autoComplete="current-password"
+              type={self.showPassword ? 'text' : 'password'}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton aria-label="toggle password visibility" onClick={this.onToggleShowPassword}>
+                      {self.showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
             <Button type="submit" fullWidth variant="contained" color="primary" className={this.props.classes.submit}>
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
                 <Link href="#" variant="body2" component={RouterLink} to="/register">
                   {"Don't have an account? Register now"}
