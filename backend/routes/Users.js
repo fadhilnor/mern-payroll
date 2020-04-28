@@ -59,9 +59,7 @@ router.route('/register').post((req, res) => {
             newUser
               .save()
               .then((user) => {
-                res.json('User added!');
-                req.flash('success_msg', 'You are now registered and can log in');
-                //res.redirect('/users/login');
+                res.json({ user, msg: 'User added!' });
               })
               .catch((err) => res.status(400).json({ error: err }));
           });
@@ -72,7 +70,7 @@ router.route('/register').post((req, res) => {
 });
 
 // Login
-router.route('/login').post((req, res) => {
+router.route('/login').post((req, res, next) => {
   const { email, password } = req.body;
   let errors = [];
 
@@ -81,38 +79,27 @@ router.route('/login').post((req, res) => {
     errors.push({ msg: 'Please enter all fields' });
   }
 
-  // Login if passed validation
+  // Passport validation
   if (errors.length > 0) {
-    res.status(400).json({ error: errors });
+    return res.status(400).json({ error: errors });
   } else {
-    // Find user
-    User.findOne({ email: email }).then((user) => {
-      if (!user) {
-        errors.push({ msg: 'Email is not registered' });
-        console.log('Errors: ' + errors[0].msg);
-        res.status(400).json({ error: errors });
-      } else {
-        const currentUser = new User({
-          email,
-          password,
-        });
-
-        // Match password
-        bcrypt.compare(currentUser.password, user.password, (err, isMatch) => {
-          if (err) {
-            errors.push({ msg: 'Something went wrong. Please try again' });
-            console.log('Errors: ' + errors[0].msg);
-            res.status(400).json({ error: errors });
-          }
-          if (isMatch) {
-            res.json('Login successful!');
-          } else {
-            errors.push({ msg: 'Incorrect email or password' });
-            res.status(400).json({ error: errors });
-          }
-        });
+    passport.authenticate('local', function (err, user, info) {
+      if (err) {
+        errors.push({ msg: err });
+        return res.status(400).json({ error: errors });
       }
-    });
+      if (!user) {
+        errors.push({ msg: 'Incorrect email or password' });
+        return res.status(400).json({ error: errors });
+      }
+      req.logIn(user, function (err) {
+        if (err) {
+          errors.push({ msg: err });
+          return res.status(400).json({ error: errors });
+        }
+        return res.json({ user, msg: 'Login successful!' });
+      });
+    })(req, res, next);
   }
 });
 
