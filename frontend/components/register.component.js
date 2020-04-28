@@ -56,19 +56,17 @@ class Register extends Component {
       showPasswordConfirm: false,
       serverError: [],
     };
-    this.onChangeName = this.onChangeName.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.onChangeEmail = this.onChangeEmail.bind(this);
-    this.onChangePassword = this.onChangePassword.bind(this);
-    this.onChangePasswordConfirm = this.onChangePasswordConfirm.bind(this);
     this.onToggleShowPassword = this.onToggleShowPassword.bind(this);
     this.onToggleShowPasswordConfrim = this.onToggleShowPasswordConfrim.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  onChangeName(e) {
+  onChange(e) {
     e.persist();
     this.setState({
-      name: e.target.value,
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -92,20 +90,6 @@ class Register extends Component {
         emailErrorText: 'Email address is not vaild',
       });
     }
-  }
-
-  onChangePassword(e) {
-    e.persist();
-    this.setState({
-      password: e.target.value,
-    });
-  }
-
-  onChangePasswordConfirm(e) {
-    e.persist();
-    this.setState({
-      passwordConfirm: e.target.value,
-    });
   }
 
   onToggleShowPassword() {
@@ -133,13 +117,18 @@ class Register extends Component {
   onSubmit(e) {
     e.preventDefault();
 
-    const newUser = this.state;
-    let self = this;
+    let self = this.state;
+    const newUser = {
+      name: self.name,
+      email: self.email,
+      password: self.password,
+      passwordConfirm: self.passwordConfirm,
+    };
     axios
       .post('http://localhost:5000/users/register', newUser)
       .then((res) => {
         console.log(res.data);
-        self.setState({
+        this.setState({
           errors: [],
           name: '',
           email: '',
@@ -180,7 +169,7 @@ class Register extends Component {
                   autoComplete="fname"
                   name="name"
                   value={self.name}
-                  onChange={this.onChangeName}
+                  onChange={this.onChange}
                   variant="outlined"
                   required
                   fullWidth
@@ -209,7 +198,7 @@ class Register extends Component {
                   variant="outlined"
                   required
                   value={self.password}
-                  onChange={this.onChangePassword}
+                  onChange={this.onChange}
                   fullWidth
                   name="password"
                   label="Password"
@@ -232,7 +221,7 @@ class Register extends Component {
                   variant="outlined"
                   required
                   value={self.passwordConfirm}
-                  onChange={this.onChangePasswordConfirm}
+                  onChange={this.onChange}
                   fullWidth
                   name="passwordConfirm"
                   label="Confirm Password"
