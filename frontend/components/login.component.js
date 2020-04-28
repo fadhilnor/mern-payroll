@@ -62,23 +62,15 @@ class LoginComponent extends Component {
       loginSuccess: '',
     };
 
-    this.onChangeEmail = this.onChangeEmail.bind(this);
-    this.onChangePassword = this.onChangePassword.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.onToggleShowPassword = this.onToggleShowPassword.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  onChangePassword(e) {
+  onChange(e) {
     e.persist();
     this.setState({
-      password: e.target.value,
-    });
-  }
-
-  onChangeEmail(e) {
-    e.persist();
-    this.setState({
-      email: e.target.value,
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -144,7 +136,7 @@ class LoginComponent extends Component {
               variant="outlined"
               margin="normal"
               value={self.email}
-              onChange={this.onChangeEmail}
+              onChange={this.onChange}
               required
               fullWidth
               id="email"
@@ -157,7 +149,7 @@ class LoginComponent extends Component {
               variant="outlined"
               margin="normal"
               value={self.password}
-              onChange={this.onChangePassword}
+              onChange={this.onChange}
               required
               fullWidth
               name="password"
