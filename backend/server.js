@@ -13,6 +13,9 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Passport Config
+require('./config/passport.local')(passport);
+
 // DB Config
 const db = require('./config/keys').mongoURI;
 
@@ -51,7 +54,9 @@ app.use(function (req, res, next) {
 
 // Routes
 const usersRouter = require('./routes/Users');
+const indexRouter = require('./routes/index');
 
+app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 app.listen(port, () => {

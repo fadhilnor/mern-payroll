@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const keys = require('../config/keys');
 let User = require('../models/Users');
 
 // Get all user
@@ -97,7 +99,27 @@ router.route('/login').post((req, res, next) => {
           errors.push({ msg: err });
           return res.status(400).json({ error: errors });
         }
-        return res.json({ user, msg: 'Login successful!' });
+        // Create JWT Payload
+        const payload = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        };
+
+        // Sign token
+        jwt.sign(
+          payload,
+          keys.secretOrKey,
+          {
+            expiresIn: 31556926, // 1 year in seconds
+          },
+          (err, token) => {
+            return res.json({
+              success: true,
+              token: 'Bearer ' + token,
+            });
+          }
+        );
       });
     })(req, res, next);
   }

@@ -19,6 +19,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { loginUser } from '../../services/authServices';
+
 const styles = (theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -50,8 +54,8 @@ const styles = (theme) => ({
 });
 
 class LoginComponent extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
       errors: [],
@@ -65,6 +69,26 @@ class LoginComponent extends Component {
     this.onChange = this.onChange.bind(this);
     this.onToggleShowPassword = this.onToggleShowPassword.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    // If logged in and user navigates to Login page, should redirect them to dashboard
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+    }
+  }
+
+  // Watch props after form is submitted
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+    }
+
+    if (nextProps.errors) {
+      this.setState({
+        serverError: nextProps.errors,
+      });
+    }
   }
 
   onChange(e) {
@@ -97,27 +121,8 @@ class LoginComponent extends Component {
       email: this.state.email,
       password: this.state.password,
     };
-    axios
-      .post('http://localhost:5000/users/login', user)
-      .then((res) => {
-        this.setState({
-          errors: [],
-          email: '',
-          password: '',
-          showPassword: false,
-          serverError: [],
-          loginSuccess: res.data.msg,
-        });
-        this.props.history.push('/dashboard');
-      })
-      .catch((error) => {
-        if (error.response) {
-          this.setState({
-            loginSuccess: '',
-            serverError: [...error.response.data.error],
-          });
-        }
-      });
+
+    this.props.loginUser(user);
   }
 
   render() {
@@ -198,4 +203,15 @@ class LoginComponent extends Component {
   }
 }
 
-export default withStyles(styles)(LoginComponent);
+LoginComponent.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  errors: state.errors,
+});
+
+export default connect(mapStateToProps, { loginUser })(withStyles(styles)(LoginComponent));
