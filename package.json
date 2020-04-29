@@ -46,7 +46,6 @@
     "start": "concurrently - kill-others \"npm run server\" \"npm run client\"",
     "build": "node_modules/.bin/webpack --config webpack.prod.js --mode production"
   },
-  "proxy": "http://localhost:5000",
   "browserslist": {
     "production": [
       ">0.2%",
