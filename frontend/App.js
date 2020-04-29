@@ -14,9 +14,9 @@ import jwt_decode from 'jwt-decode';
 import setAuthToken from './utils/setAuthToken';
 import { setCurrentUser, logoutUser } from './services/authServices';
 
-import Login from './components/login.component';
-import Register from './components/register.component';
-import Dashboard from './components/dashboard.component';
+import Login from './components/auth/login.component';
+import Register from './components/auth/register.component';
+import Dashboard from './components/dashboard/dashboard.component';
 
 function Copyright() {
   return (
