@@ -106,8 +106,9 @@ class LoginComponent extends Component {
           password: '',
           showPassword: false,
           serverError: [],
-          loginSuccess: res.data,
+          loginSuccess: res.data.msg,
         });
+        this.props.history.push('/dashboard');
       })
       .catch((error) => {
         if (error.response) {
