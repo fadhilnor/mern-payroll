@@ -1,8 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
-const keys = require('../config/keys');
+
 let User = require('../models/Users');
 const assignToken = require('../utils/assignToken');
 
@@ -62,15 +61,8 @@ router.route('/register').post((req, res) => {
             newUser
               .save()
               .then((user) => {
-                // Create JWT Payload
-                const payload = {
-                  id: user.id,
-                  name: user.name,
-                  email: user.email,
-                };
-
-                // Sign token
-                assignToken(payload)
+                // Assign token to new user
+                assignToken(user)
                   .then((token) => {
                     return res.json({
                       success: true,
@@ -115,27 +107,15 @@ router.route('/login').post((req, res, next) => {
           errors.push({ msg: err });
           return res.status(400).json({ error: errors });
         }
-        // Create JWT Payload
-        const payload = {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        };
-
-        // Sign token
-        jwt.sign(
-          payload,
-          keys.secretOrKey,
-          {
-            expiresIn: 31556926, // 1 year in seconds
-          },
-          (err, token) => {
+        // Assign token to user
+        assignToken(user)
+          .then((token) => {
             return res.json({
               success: true,
               token: 'Bearer ' + token,
             });
-          }
-        );
+          })
+          .catch((err) => res.status(400).json({ error: err }));
       });
     })(req, res, next);
   }
