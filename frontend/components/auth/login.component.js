@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
 import { Link as RouterLink } from 'react-router-dom';
-import axios from 'axios';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import List from '@material-ui/core/List';

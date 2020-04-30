@@ -10,12 +10,15 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Link as RouterLink } from 'react-router-dom';
-import axios from 'axios';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { registerUser } from '../../services/authServices';
 
 const styles = (theme) => ({
   paper: {
@@ -61,6 +64,26 @@ class Register extends Component {
     this.onToggleShowPassword = this.onToggleShowPassword.bind(this);
     this.onToggleShowPasswordConfrim = this.onToggleShowPasswordConfrim.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    // If logged in and user navigates to Login page, should redirect them to dashboard
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+    }
+  }
+
+  // Watch props state changes
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+    }
+
+    if (nextProps.errors) {
+      this.setState({
+        serverError: nextProps.errors,
+      });
+    }
   }
 
   onChange(e) {
@@ -124,29 +147,8 @@ class Register extends Component {
       password: self.password,
       passwordConfirm: self.passwordConfirm,
     };
-    axios
-      .post('http://localhost:5000/users/register', newUser)
-      .then((res) => {
-        console.log(res.data);
-        this.setState({
-          errors: [],
-          name: '',
-          email: '',
-          password: '',
-          passwordConfirm: '',
-          emailErrorText: '',
-          showPassword: false,
-          showPasswordConfirm: false,
-          serverError: [],
-        });
-      })
-      .catch((error) => {
-        if (error.response) {
-          this.setState({
-            serverError: [...error.response.data.error],
-          });
-        }
-      });
+
+    this.props.registerUser(newUser);
   }
 
   render() {
@@ -269,4 +271,15 @@ class Register extends Component {
   }
 }
 
-export default withStyles(styles)(Register);
+Register.propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  errors: state.errors,
+});
+
+export default connect(mapStateToProps, { registerUser })(withStyles(styles)(Register));

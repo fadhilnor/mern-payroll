@@ -4,6 +4,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 let User = require('../models/Users');
+const assignToken = require('../utils/assignToken');
 
 // Get all user
 router.route('/').get((req, res) => {
@@ -61,7 +62,22 @@ router.route('/register').post((req, res) => {
             newUser
               .save()
               .then((user) => {
-                res.json({ user, msg: 'User added!' });
+                // Create JWT Payload
+                const payload = {
+                  id: user.id,
+                  name: user.name,
+                  email: user.email,
+                };
+
+                // Sign token
+                assignToken(payload)
+                  .then((token) => {
+                    return res.json({
+                      success: true,
+                      token: 'Bearer ' + token,
+                    });
+                  })
+                  .catch((err) => res.status(400).json({ error: err }));
               })
               .catch((err) => res.status(400).json({ error: err }));
           });

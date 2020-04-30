@@ -1,19 +1,28 @@
 import axios from 'axios';
-import setAuthToken from '../utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
 
 import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING } from './types';
 import { API } from './proxy';
 
+import setAuthToken from '../utils/setAuthToken';
+import processToken from '../utils/processToken';
+
 // Register User
-export const registerUser = (userData, history) => (dispatch) => {
+export const registerUser = (userData) => (dispatch) => {
   axios
-    .post('/users/register', userData)
-    .then((res) => history.push('/login'))
+    .post(API + '/users/register', userData)
+    .then((res) => {
+      // Process token from server
+      const { token } = res.data;
+      processToken(token).then((decoded) => {
+        // Set current user
+        dispatch(setCurrentUser(decoded));
+      });
+    })
     .catch((err) =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data,
+        payload: err.response.data.error,
       })
     );
 };
