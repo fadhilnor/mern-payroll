@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-
 import { Provider } from 'react-redux';
+
 import store from './store';
 import jwt_decode from 'jwt-decode';
 import setAuthToken from './utils/setAuthToken';
 import { setCurrentUser, logoutUser } from './services/authServices';
 
-import PrivateRoute from './components/private-route/privateroute';
-import PublicRoute from './components/public-route/publicroute';
-import Dashboard from './components/dashboard/dashboard.component';
+import Routes from './Routes';
+import theme from './theme';
+
+import { ThemeProvider } from '@material-ui/styles';
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -38,13 +38,9 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Router>
-          <Route exact path="/" component={PublicRoute} />
-          <Route path="/register" component={PublicRoute} />
-          <Switch>
-            <PrivateRoute path="/dashboard" component={Dashboard} />
-          </Switch>
-        </Router>
+        <ThemeProvider theme={theme}>
+          <Routes />
+        </ThemeProvider>
       </Provider>
     );
   }
