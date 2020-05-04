@@ -55,9 +55,6 @@ app.use(function (req, res, next) {
 
 // Routes
 const usersRouter = require('./routes/Users');
-const indexRouter = require('./routes/index');
-
-app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // Serve static assets if in production

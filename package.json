@@ -48,6 +48,7 @@
     "client": "webpack-dev-server --open --history-api-fallback",
     "server": "cd backend && nodemon server",
     "dev": "concurrently - kill-others \"npm run server\" \"npm run client\"",
+    "start": "cd backend && node server.js",
     "heroku-prebuild": "npm install --dev && npm install --dev --prefix backend",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix backend && npm run build",
     "build": "webpack --mode production && cd backend && npm install"
