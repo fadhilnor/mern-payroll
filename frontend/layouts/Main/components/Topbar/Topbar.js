@@ -10,13 +10,20 @@ import InputIcon from '@material-ui/icons/Input';
 import { Typography } from '@material-ui/core';
 
 import { logoutUser } from '../../../../services/authServices';
+import Logo from '../../../../public/images/logo/logo.svg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     boxShadow: 'none',
+    background: 'linear-gradient(to right bottom, #6200ea, #3f51b5)',
   },
   flexGrow: {
     flexGrow: 1,
+  },
+  logo: {
+    marginLeft: theme.spacing(1),
+    fontWeight: 500,
+    fontSize: '20px',
   },
   signOutButton: {
     marginLeft: theme.spacing(1),
@@ -36,12 +43,11 @@ const Topbar = (props) => {
     <AppBar {...rest} className={clsx(classes.root, className)}>
       <Toolbar>
         <RouterLink to="/">
-          {/* App Logo */}
-          {/* <img
-            alt="Logo"
-            src=""
-          /> */}
+          <Logo fill="white" className="logo" width={50} height={40} />
         </RouterLink>
+        <Typography className={classes.logo} color="inherit">
+          MERN-Payroll
+        </Typography>
         <div className={classes.flexGrow} />
         <Hidden smDown>
           <IconButton className={classes.signOutButton} color="inherit" onClick={() => dispatch(logoutUser())}>
