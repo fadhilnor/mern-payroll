@@ -42,7 +42,7 @@ const Topbar = (props) => {
   return (
     <AppBar {...rest} className={clsx(classes.root, className)}>
       <Toolbar>
-        <RouterLink to="/">
+        <RouterLink to="/dashboard">
           <Logo fill="white" className="logo" width={50} height={40} />
         </RouterLink>
         <Typography className={classes.logo} color="inherit">
