@@ -25,6 +25,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "clsx": "^1.1.0",
+    "concurrently": "^5.2.0",
     "dom": "0.0.3",
     "is-empty": "^1.2.0",
     "jwt-decode": "^2.2.0",
