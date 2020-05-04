@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
+const path = require('path');
 
 require('dotenv').config();
 
@@ -58,6 +59,15 @@ const indexRouter = require('./routes/index');
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+// Serve static assets if in production
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static('../dist'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve('../dist', 'index.html'));
+  });
+}
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
