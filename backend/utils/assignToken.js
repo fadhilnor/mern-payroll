@@ -1,5 +1,12 @@
 const jwt = require('jsonwebtoken');
-const keys = require('../config/keys') || 'https://tinyurl.com/y3yhwvjz';
+
+// DB Config
+var keys;
+if (process.env.NODE_ENV === 'production') {
+  keys = process.env.JWTkeys;
+} else {
+  keys = require('../config/keys');
+}
 
 module.exports = assignToken = (user) => {
   return new Promise((resolve, reject) => {

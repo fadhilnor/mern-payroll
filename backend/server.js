@@ -34,15 +34,6 @@ mongoose
 // Express body parser
 app.use(express.urlencoded({ extended: true }));
 
-// Express session
-app.use(
-  session({
-    secret: 'secret',
-    resave: true,
-    saveUninitialized: true,
-  })
-);
-
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
