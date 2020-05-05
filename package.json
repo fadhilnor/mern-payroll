@@ -36,7 +36,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "webpack": "^4.43.0"
   },
   "babel": {
     "presets": [
@@ -49,9 +50,9 @@
     "server": "cd backend && nodemon server",
     "dev": "concurrently - kill-others \"npm run server\" \"npm run client\"",
     "start": "cd backend && node server.js",
-    "heroku-prebuild": "npm install --dev && npm install --prefix backend",
+    "heroku-prebuild": "npm install --dev && npm install",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix backend && npm run build",
-    "build": "webpack --mode production && cd backend && npm install"
+    "build": "webpack --mode production"
   },
   "browserslist": {
     "production": [
