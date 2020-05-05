@@ -1,5 +1,6 @@
 var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   entry: './frontend/index.js',
@@ -29,6 +30,7 @@ module.exports = {
     ],
   },
   mode: 'production',
+  plugins: [new CleanWebpackPlugin()],
   devServer: {
     historyApiFallback: true,
     contentBase: './',
