@@ -31,10 +31,8 @@ module.exports = {
   mode: 'production',
   plugins: [
     new HtmlWebpackPlugin({
-      filename: 'index.html',
+      filename: './index.html',
       inject: true,
-      template: path.resolve(__dirname, 'dist', 'index.html'),
-      favicon: path.resolve(__dirname, 'dist', 'favicon.ico'),
     }),
   ],
   devServer: {
