@@ -2,8 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const passport = require('passport');
-const flash = require('connect-flash');
-const session = require('express-session');
 const path = require('path');
 
 require('dotenv').config();
@@ -40,17 +38,6 @@ app.use(express.urlencoded({ extended: true }));
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-
-// Connect flash
-app.use(flash());
-
-// Global variables
-app.use(function (req, res, next) {
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
-  res.locals.error = req.flash('error');
-  next();
-});
 
 // Routes
 const usersRouter = require('./routes/Users');
