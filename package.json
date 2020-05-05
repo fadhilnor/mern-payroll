@@ -57,7 +57,7 @@
     "start": "cd backend && node server.js",
     "heroku-prebuild": "npm install --dev && npm install",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix backend && npm run build",
-    "build": "webpack --mode production"
+    "build": "webpack --config=webpack.config.prod.js"
   },
   "browserslist": {
     "production": [
