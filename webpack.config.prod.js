@@ -34,21 +34,7 @@ module.exports = {
     ],
   },
   mode: 'production',
-  plugins: [
-    new CleanWebpackPlugin(),
-    new webpack.DedupePlugin(),
-    new webpack.UglifyJsPlugin({
-      minimize: true,
-      compress: {
-        warnings: false,
-      },
-    }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-      },
-    }),
-  ],
+  plugins: [new CleanWebpackPlugin()],
   devServer: {
     historyApiFallback: true,
     contentBase: './',
