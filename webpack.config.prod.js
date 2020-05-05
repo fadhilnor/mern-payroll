@@ -29,12 +29,6 @@ module.exports = {
     ],
   },
   mode: 'production',
-  plugins: [
-    new HtmlWebpackPlugin({
-      filename: './index.html',
-      inject: true,
-    }),
-  ],
   devServer: {
     historyApiFallback: true,
     contentBase: './',
