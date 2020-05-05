@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   db = require('./config/keys').mongoURI;
 }
-console.log(process.env.mongoURI);
+console.log(db);
 
 // Connect to Mongo
 mongoose
