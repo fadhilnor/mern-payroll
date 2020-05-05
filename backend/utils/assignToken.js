@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const keys = require('../config/keys');
+const keys = require('../config/keys') || 'https://tinyurl.com/y3yhwvjz';
 
 module.exports = assignToken = (user) => {
   return new Promise((resolve, reject) => {

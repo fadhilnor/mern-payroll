@@ -18,7 +18,9 @@ app.use(express.json());
 require('./config/passport.local')(passport);
 
 // DB Config
-const db = require('./config/keys').mongoURI;
+const db =
+  require('./config/keys').mongoURI ||
+  'mongodb+srv://admin:admin123@cluster0-yku3y.mongodb.net/mern-payroll?retryWrites=true&w=majority';
 
 // Connect to Mongo
 mongoose
