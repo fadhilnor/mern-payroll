@@ -55,8 +55,8 @@
     "server": "cd backend && nodemon server",
     "dev": "concurrently - kill-others \"npm run server\" \"npm run client\"",
     "start": "cd backend && node server.js",
-    "heroku-prebuild": "npm install --dev && npm install",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix backend && npm run build",
+    "heroku-prebuild": "npm install --prefix backend && npm install",
+    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress",
     "build": "webpack --config=webpack.config.prod.js"
   },
   "browserslist": {
