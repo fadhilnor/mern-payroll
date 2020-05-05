@@ -2,6 +2,7 @@ var path = require('path');
 const webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+require('dotenv').config();
 
 module.exports = {
   devtool: 'source-map',
@@ -35,8 +36,8 @@ module.exports = {
   mode: 'production',
   plugins: [
     new CleanWebpackPlugin(),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
+    new webpack.DedupePlugin(),
+    new webpack.UglifyJsPlugin({
       minimize: true,
       compress: {
         warnings: false,
