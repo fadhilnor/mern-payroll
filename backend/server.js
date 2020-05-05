@@ -20,10 +20,13 @@ require('./config/passport.local')(passport);
 // DB Config
 var db;
 if (process.env.NODE_ENV === 'production') {
+  console.log(process.env.mongoURI);
+  console.log(process.env);
   db = process.env.mongoURI;
 } else {
   db = require('./config/keys').mongoURI;
 }
+console.log(process.env.mongoURI);
 
 // Connect to Mongo
 mongoose
