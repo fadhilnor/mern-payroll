@@ -34,7 +34,13 @@ module.exports = {
     ],
   },
   mode: 'production',
-  plugins: [new CleanWebpackPlugin()],
+  plugins: [
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: './frontend/public/index.html',
+      favicon: './frontend/public/favicon.ico',
+    }),
+  ],
   devServer: {
     historyApiFallback: true,
     contentBase: './',
